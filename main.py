@@ -2,7 +2,14 @@ from scholarly import scholarly
 from OSMPythonTools.nominatim import Nominatim
 from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
+from fp.fp import FreeProxy
+from scholarly import ProxyGenerator
+from time import sleep
 
+pg = ProxyGenerator()
+proxy = FreeProxy(rand=True, timeout=1, country_id=['BR']).get()
+pg.SingleProxy(http=proxy, https=proxy)
+scholarly.use_proxy(pg)
 
 
 def plot_citations(author_name):
@@ -12,19 +19,21 @@ def plot_citations(author_name):
 
     search_query = scholarly.search_author(author_name)
     author = next(search_query).fill()
-    for pub in author.publications:
+    for pub in [author.publications[0]]:
         print('Title: ', pub.bib['title'])
         pub = pub.fill()
+        sleep(45)
         for citation in pub.citedby:
+            sleep(45)
             firstAuthorId = None
-            while firstAuthorID is None or len(citation.author_ids) == 0:
+            while firstAuthorId is None or len(citation.author_ids) == 0:
                 firstAuthorId = citation.author_ids.pop()
             if firstAuthorId is None:
                 continue
             author = scholarly.search_author_id(firstAuthorId)
+            sleep(45)
             lat, lon = get_location(author.affiliation)
-
-            plt.plot(lat, lon)
+            m.plot(lat, lon, marker='D')
     plt.show()
 
 
