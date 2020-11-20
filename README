@@ -1,0 +1,6 @@
+Requirements:
+ - matplotlib
+ - scholarly
+ - OSMPythonTools
+ - fp
+ - matplotlib toolkit basemap
