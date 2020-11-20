@@ -36,7 +36,8 @@ def plot_citations(author_name):
             author = scholarly.search_author_id(firstAuthorId)
             sleep(45)
             lat, lon = get_location(author.affiliation)
-            m.plot(float(lon), float(lat), marker='D')
+            x, y = m(float(lon), float(lat))
+            m.plot(x, y, marker='D')
     plt.show()
 
 
