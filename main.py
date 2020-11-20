@@ -19,28 +19,31 @@ def plot_citations(author_name):
 
     search_query = scholarly.search_author(author_name)
     author = next(search_query).fill()
+    print(author)
     for pub in [author.publications[0]]:
         print('Title: ', pub.bib['title'])
         pub = pub.fill()
         sleep(45)
         for citation in pub.citedby:
+            print(citation)
             sleep(45)
             firstAuthorId = None
-            while firstAuthorId is None or len(citation.author_ids) == 0:
-                firstAuthorId = citation.author_ids.pop()
+            while firstAuthorId is None or len(citation.bib['author_id']) == 0:
+              firstAuthorId = citation.bib['author_id'].pop()
             if firstAuthorId is None:
-                continue
+              continue
+            print(firstAuthorId)
             author = scholarly.search_author_id(firstAuthorId)
             sleep(45)
             lat, lon = get_location(author.affiliation)
-            m.plot(lat, lon, marker='D')
+            m.plot(float(lat), float(lon), marker='D')
     plt.show()
 
 
 
 def get_location(affiliation):
     nominatim = Nominatim()
-    res = nominatim.query(affiliation)[0]
+    res = nominatim.query(affiliation).toJSON()[0]
     return (res['lat'], res['lon'])
 
 
